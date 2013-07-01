@@ -273,7 +273,7 @@ def get_revisions():
         rev.timestamp = revision_datetime
         rev.date = revision_date
         rev.package_id = getCreatePackage_id(get_package_id(revision_data))
-        rev.group_id = get_packagegroup_id(revision_data)
+        rev.group_id = getCreatePackageGroup(get_packagegroup_id(revision_data))
         rev.author = revision_data["author"]
         rev.message = revision_data["message"]
         rev.message_type = revision_message["type"]
