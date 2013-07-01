@@ -1,0 +1,26 @@
+{% set active_page='publisher'%}{% extends "layout.html" %}
+{% block title %}Publishers{% endblock %}
+{% block content %}
+   <script src="/static/jquery.tablesorter.min.js"></script>
+    <script >
+    $(function() {
+    $("table#publishers").tablesorter({ sortList: [[0,0]] });
+    });
+
+    </script>
+    <h1>Publisher</h1>
+    <table class="table" id="publishers">
+        <thead>
+        <th>Publisher name</th><th>Registry</th>
+        </thead>
+        <tbody>
+        {% for publisher in publishers %}
+        <tr>
+            <td>{{publisher.display_name}}</td><td><a href="http://iatiregistry.org/publisher/{{publisher.name}}"><i class="icon-arrow-right"></i></a></td>
+        </tr>
+        {% endfor %}
+        </tbody>
+
+    </table>
+
+{% endblock %}

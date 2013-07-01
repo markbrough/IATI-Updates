@@ -1,0 +1,26 @@
+{% set active_page='package'%}{% extends "layout.html" %}
+{% block title %}Packages{% endblock %}
+{% block content %}
+   <script src="/static/jquery.tablesorter.min.js"></script>
+    <script >
+    $(function() {
+    $("table#packages").tablesorter({ sortList: [[0,0]] });
+    });
+
+    </script>
+    <h1>Packages</h1>
+    <table class="table" id="packages">
+        <thead>
+        <th>Package name</th><th>Issues</th><th>Registry</th>
+        </thead>
+        <tbody>
+        {% for package in packages %}
+        <tr>
+            <td>{{package.title}}</td><td>{% if package.issue_type %}{{package.issue_type}}{% endif %}</td><td><a href="http://iatiregistry.org/dataset/{{package.name}}"><i class="icon-arrow-right"></i></a></td>
+        </tr>
+        {% endfor %}
+        </tbody>
+
+    </table>
+
+{% endblock %}

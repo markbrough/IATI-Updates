@@ -1,0 +1,107 @@
+{% set active_page = active_page|default('index') -%}<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>{% block title %}{% endblock %} &raquo; IATI Updates</title>
+    <link href="{{url_for('static', filename='css/bootstrap-responsive.min.css')}}" media="all" rel="stylesheet" type="text/css" />
+    <link href="{{url_for('static', filename='css/bootstrap.min.css')}}" media="all" rel="stylesheet" type="text/css" />
+    <script src="{{url_for('static', filename='vendor/jquery/1.7.1/jquery.js')}}" type="text/javascript"></script>
+    <script src="{{url_for('static', filename='js/bootstrap.min.js')}}" type="text/javascript"></script>
+    <link href="{{url_for('static', filename='style.css')}}" media="all" rel="stylesheet" type="text/css" />
+    <style>
+    .flashmessage {
+        display:none;
+    }
+    </style>
+    <script type="text/javascript">
+
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-18679634-7']);
+      _gaq.push(['_trackPageview']);
+
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+
+    </script>
+</head>
+<body>
+
+    <div class="navbar navbar-static-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+          <a class="brand" href="/">IATI Updates</a>
+          <div class="nav-collapse collapse">
+            <ul class="nav">
+              <li class="dropdown publish-branding">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                <b>Updates</b>
+                <b class="caret"></b>
+                </a>
+                <ul class="dropdown-menu">
+                  <li ><a href="/plan/">Plan</a></li>
+                  <li ><a href="/plan/">Publish</a></li>
+                </ul>
+              </li>
+              <li{% if active_page == "index" %} class="active"{%endif%}><a href="{{url_for('home')}}">Home</a></li>
+              <li{% if active_page == "publisher" %} class="active"{%endif%}><a href="{{url_for('publisher')}}">Publishers</a></li>
+              <li{% if active_page == "package" %} class="active"{%endif%}><a href="{{url_for('package')}}">Packages</a></li>
+              <li{% if active_page == "revisions" %} class="active"{%endif%}><a href="{{url_for('revision')}}">Revisions</a></li>
+            </ul>
+          </div><!--/.nav-collapse -->
+        </div>
+      </div>
+    </div>
+
+  {% if active_page != "index" %}
+  <div class="container">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+              <div class="alert alert-{{category}} flashmessage">
+                <p>{{message}}</p>
+                </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+  {% endif %}
+        {% block content %}
+        {% endblock %}
+  {% if active_page != "index" %}
+  </div>
+  {%endif%}
+    <script type="text/javascript">
+        $('.flashmessage').fadeIn('slow');
+    </script>
+    <footer class="footer">
+    <div class="container">
+    <div class="pull-left">
+        <p><a href="http://publishwhatyoufund.org"><img src="{{url_for('static', filename='img/pwyf_small.png')}}" alt="A project of Publish What You Fund" /></a></p>
+        <p><a href="https://github.com/markbrough/IATI-Data-Quality">Source code on Github</a>, released under the <a href="http://www.gnu.org/licenses/agpl-3.0.html">AGPL v3.0 License</a>.</p>
+        <p><a href="http://aidtransparency.net">International Aid Transparency Initiative (IATI)</a></p>
+        <p><a href="http://iatiregistry.org">IATI Registry</a> &ndash; <a href="http://iatistandard.org">IATI Standard</a></p>
+        <p><a href="http://www.publishwhatyoufund.org/privacy/">Privacy Policy</a></p>
+    </div>
+    <div class="pull-right">
+        <p>Uses some great open source code:</p>
+        <ul>
+            <li><a href="http://twitter.github.com/bootstrap">Bootstrap from Twitter</a></li>
+            <li><a href="http://tablesorter.com/docs/">JQuery TableSorter</a></li>
+            <li><a href="http://reclinejs.com/">ReclineJS</a>, by <a href="http://okfn.org">OKFN</a></li>
+            <li><a href="https://github.com/Bjwebb/iati-implementationxml">iati-implementationxml</a>, by <a href="http://twitter.com/bjwebb67">Ben Webb</a></li>
+        </ul>
+        <p>With thanks to <a href="http://mk.ucant.org/">Martin Keegan</a>, <a href="http://twitter.com/bjwebb67">Ben Webb</a>,<br /><a href="http://twitter.com/caprenter">David Carpenter</a>, and many more.</p>
+    </div>
+    </div></footer>
+</body>
+</html>
