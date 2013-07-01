@@ -111,6 +111,18 @@ def getCreatePackageGroup(id):
         return pg
     return check
 
+def getCreatePackageGroup_id(id):
+    if id is None:
+        return None
+    check = models.PackageGroup.query.filter_by(id=id).first()
+    if not check:
+        pg = models.PackageGroup()
+        pg.id = id
+        db.session.add(pg)
+        db.session.commit()
+        return pg.id
+    return check.id
+
 def getPackageGroupByName(name):
     check = models.PackageGroup.query.filter_by(name=name).first()
     if not check:
@@ -275,7 +287,7 @@ def get_revisions():
         rev.timestamp = revision_datetime
         rev.date = revision_date
         rev.package_id = getCreatePackage_id(get_package_id(revision_data))
-        rev.group_id = getCreatePackageGroup(get_packagegroup_id(revision_data)).id
+        rev.group_id = getCreatePackageGroup(get_packagegroup_id(revision_data))
         rev.author = revision_data["author"]
         rev.message = revision_data["message"]
         rev.message_type = revision_message["type"]
