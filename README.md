@@ -2,12 +2,9 @@
 
 This application scrapes the IATI Registry API, to add some information and present other information in a more accessible way.
 
-1) Frequency information added based on number of months in which any packages have changed
-
-To be added:
-
-1) Hashes (to know whether a file has changed)
-2) Issues (to know whether a file is recorded as being broken)
+1. Frequency information added based on number of months in which any packages have changed
+2. Hashes (to know whether a file has changed)
+3. Issues (to know whether a file is recorded as being broken)
 
 # License
 
