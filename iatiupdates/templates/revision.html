@@ -1,7 +1,7 @@
 {% set active_page='revisions'%}{% extends "layout.html" %}
 {% block title %}Revisions{% endblock %}
 {% block content %}
-   <script src="url_for('static', filename='jquery.tablesorter.min.js')"></script>
+   <script src="{{url_for('static', filename='jquery.tablesorter.min.js')}}"></script>
     <script >
     $(function() {
     $("table#revisions").tablesorter({ sortList: [[0,0]] });
