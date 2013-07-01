@@ -25,3 +25,34 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with IATI Updates.  If not, see <http://www.gnu.org/licenses/>.
+
+# Setup
+
+1. Clone the repository and change to that directory
+
+        git clone git@github.com:markbrough/IATI-Updates.git
+        cd IATI-Updates
+
+2. It's recommended that you run this in a virtualenv:
+
+        virtualenv ./pyenv
+
+3. Activate the `virtualenv`:
+
+        source ./pyenv/bin/activate
+
+4. Install the requirements:
+
+        pip install -r requirements.txt
+
+5. Copy the template configuration file, and then edit it:
+
+        cp config.py.tmpl config.py
+
+6. Launch from the command line:
+
+        ./manage.py runserver
+
+7. Start updates by navigating in your browser to:
+
+        http://127.0.0.1:5000/update/
