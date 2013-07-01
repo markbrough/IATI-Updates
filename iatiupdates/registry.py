@@ -106,6 +106,8 @@ def getCreatePackageGroup(id):
     if not check:
         pg = models.PackageGroup()
         pg.id = id
+        db.session.add(pg)
+        db.session.commit()
         return pg
     return check
 
