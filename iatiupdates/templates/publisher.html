@@ -43,7 +43,7 @@
         <tbody>
         {% for publisher in publishers %}
         <tr>
-            <td><a id="{{publisher.name}}"/>{{publisher.display_name}}</td>
+            <td><a id="{{publisher.name}}"></a>{{publisher.display_name}}</td>
             <td>{{frequencies[publisher.frequency]}}</td>
             <td>{{publisher.frequency_comment}}</td>
             <td><a href="http://iatiregistry.org/publisher/{{publisher.name}}"><i class="icon-arrow-right"></i></a></td>
