@@ -12,6 +12,7 @@ import json
 import datetime
 import models
 from iatiupdates import db
+from sqlalchemy import func
 
 PACKAGESEARCH_URL = "http://iatiregistry.org/api/2/search/dataset?fl=id,name,groups,title,ckan_url&limit=1000&offset=%s"
 PACKAGEGROUPS_URL="http://iatiregistry.org/api/2/rest/group/"
@@ -40,6 +41,14 @@ def getNumRealPublishers():
                 ).filter(models.PackageGroup.name!=None
                 ).all()
     return len(query)
+
+def getFrequencyTotals():
+    query = db.session.query(models.PackageGroup.frequency,
+                             func.count(models.PackageGroup.id)
+                    ).filter(models.PackageGroup.name!=None
+                    ).group_by(models.PackageGroup.frequency
+                    ).all()
+    return query
 
 def publishers(id=None):
     if id is not None:

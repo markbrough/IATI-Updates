@@ -1,6 +1,37 @@
 {% set active_page='index'%}{% extends "layout.html" %}
 {% block title %}Home{% endblock %}
 {% block content %}
+   <script src="{{url_for('static', filename='jquery.tablesorter.min.js')}}"></script>
+    <script >
+    $(function() {
+    $.tablesorter.addParser({
+        id: 'frequencysorter',
+        is: function(s) { 
+            // return false so this parser is not auto detected 
+            return false; 
+        }, 
+        format: function(value, table, cell) {
+            if (value == 'Monthly') {
+                return 0;
+            } else if (value=='Quarterly') {
+                return 1;
+            } else if (value=='Less than quarterly') {
+                return 2;
+            } else {
+                return 3;
+            }
+        },
+        type: 'numeric'
+    }); 
+    $("table#frequencies").tablesorter({
+                headers: {
+                    0: {
+                        sorter: 'frequencysorter'
+                       }
+                },
+                sortList: [[0,0]] });
+    });
+    </script>
     <div class="jumbotron masthead">
         <div class="container">
         <h1><span class="black">IATI Updates</span></h1>
@@ -38,6 +69,17 @@
                 <div class="span6">
                     <h1>Stats</h1>
                     <p class="lead">There are {{num_publishers}} publishers on the IATI Registry.</p>
+                    <table class="table" id="frequencies">
+                    <thead>
+                        <th>Frequency of publication</th>
+                        <th>Number</th>
+                    </thead>
+                    <tbody>
+                    {% for frequency in frequency_totals %}
+                    <tr><td>{{frequencies[frequency[0]]}}</td><td>{{frequency[1]}}</td>
+                    {%endfor %}
+                    </tbody>
+                    </table>
                 </div>
             </div>
     </div>

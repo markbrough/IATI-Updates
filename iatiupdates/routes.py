@@ -18,8 +18,12 @@ import os
 @app.route("/")
 def home():
     num_publishers = registry.getNumRealPublishers()
+    frequency_totals = registry.getFrequencyTotals()
+    frequencies = registry.FREQUENCIES
     return render_template("dashboard.html",
-            num_publishers=num_publishers)
+            num_publishers=num_publishers,
+            frequency_totals=frequency_totals,
+            frequencies=frequencies)
 
 @app.route("/freq/")
 def freq():
