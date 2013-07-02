@@ -64,7 +64,10 @@ def api_package_hash():
     data = []
     packages = registry.packages()
     for package in packages:
-        data.append({"id": package.id, "name": package.name, "hash": package.hash})
+        data.append({"id": package.id, 
+                     "name": package.name, 
+                     "hash": package.hash, 
+                     "url": package.url})
     return jsonify({"data": data})
 
 @app.route("/api/revision/")
