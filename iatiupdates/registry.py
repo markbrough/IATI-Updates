@@ -21,6 +21,10 @@ PACKAGE_URL="http://iatiregistry.org/api/2/rest/package/%s"
 REVISIONS_URL="http://iatiregistry.org/api/2/search/revision?since_time=%s"
 REVISION_URL="http://iatiregistry.org/api/2/rest/revision/%s"
 
+FREQUENCY_MONTHLY=1
+FREQUENCY_QUARTERLY=2
+FREQUENCY_LTQUARTERLY=3
+
 def getNumRealPublishers():
     query = db.session.query(models.PackageGroup
                 ).join(models.Package
@@ -303,3 +307,72 @@ def get_revisions():
         print "saving"
         db.session.add(rev)
         db.session.commit()
+
+def calculate_frequency():
+    def check_data_last_four_months(packagegroup_name, packagegroups):
+        fourmonths_ago = (datetime.datetime.utcnow()-datetime.timedelta(days=4*30)).date()
+        lastfourmonth_dates = filter(lambda d: d>fourmonths_ago, packagegroups[packagegroup_name])
+        return len(lastfourmonth_dates)
+
+    def check_data_avg_months_to_publication(packagegroup_name, packagegroups):
+        earliest_date = min(packagegroups[packagegroup_name])
+        earliest_date_days_ago=(datetime.datetime.utcnow().date()-earliest_date).days
+        number_months_changes = len(packagegroups[packagegroup_name])
+        avg_days_per_change = earliest_date_days_ago/number_months_changes
+        if avg_days_per_change > 4000:
+            return 0
+        return avg_days_per_change
+
+    def generate_data():
+        # Get distinct dates for each packagegroup
+
+        data = db.session.query(models.PackageGroup.name, models.Revision.date
+                ).outerjoin(models.Revision
+                ).distinct(
+                ).all()
+
+        packagegroups = {}
+        for row in data:
+            try:
+                packagegroups[row.name].append(row.date.date())
+            except KeyError:
+                try:
+                    packagegroups[row.name] = []
+                    packagegroups[row.name].append(row.date.date())
+                except AttributeError:
+                    packagegroups[row.name] = []
+                    packagegroups[row.name].append(datetime.date(year=2000,month=1,day=1))
+        return packagegroups
+
+    def get_frequency():
+        packagegroups = generate_data()
+        for packagegroup in sorted(packagegroups.keys()):
+            lastfour = check_data_last_four_months(packagegroup, packagegroups)
+            avgmonths = check_data_avg_months_to_publication(packagegroup, packagegroups)
+            #if lastfour >=3:
+            #    frequency = "monthly"
+            #    comment = "Updated " + str(lastfour) + " times in the last 4 months"
+            if avgmonths ==0:
+                frequency = "never"
+                comment = "Never updated"
+            elif avgmonths<31:
+                frequency = "monthly"
+                comment = "Updated on average every " + str(avgmonths) + " days"
+            elif avgmonths<93:
+                frequency = "quarterly"
+                comment = "Updated on average every " + str(avgmonths) + " days"
+            else:
+                frequency = "less than quarterly"
+                comment = "Updated on average every " + str(avgmonths) + " days"
+            yield packagegroup, frequency, comment
+
+    out = ""
+    for packagegroup, frequency, comment in get_frequency():
+        ps = publishers(getPackageGroupByName(packagegroup))
+        if not ps:
+            continue
+        out += str((packagegroup, frequency, comment)) + "<br />"
+    return out
+    #publisher.frequency=frequency
+    #publisher.frequency_comment=comment
+    #db.session.add(publisher)

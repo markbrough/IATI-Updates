@@ -57,6 +57,8 @@ class PackageGroup(db.Model):
     revision_id = Column(UnicodeText)
     packages = Column(UnicodeText)
     name = Column(UnicodeText)
+    frequency = Column(Integer)
+    frequency_comment = Column(UnicodeText)
 
     def as_dict(self):
        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
