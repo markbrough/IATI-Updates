@@ -49,6 +49,15 @@ def api_package():
         data.append(package.as_dict())
     return jsonify({"data": data})
 
+
+@app.route("/api/packages/hashes")
+def api_package():
+    data = []
+    packages = registry.packages()
+    for package in packages:
+        data.append({"id": package.id, "name": package.name, "hash": package.hash})
+    return jsonify({"data": data})
+
 @app.route("/api/revision/")
 def api_revision():
 
