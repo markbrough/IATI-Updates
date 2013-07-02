@@ -57,21 +57,25 @@ def update():
     registry.get_packages()
     print "getting revisions..."
     registry.get_revisions()
+    return "Complete"
 
 @app.route("/update/revisions/")
 def update_revisions():
     print "getting revisions..."
     registry.get_revisions()
+    return "Complete"
 
 @app.route("/update/packagegroups/")
 def update_packagegroups():
     print "getting packagegroups..."
     registry.get_packagegroups()
+    return "Complete"
 
 @app.route("/update/packages/")
 def update_packages():
     print "getting packages..."
     registry.get_packages()
+    return "Complete"
 
 @app.errorhandler(404)
 def page_not_found(error):
