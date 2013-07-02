@@ -4,19 +4,50 @@
    <script src="{{url_for('static', filename='jquery.tablesorter.min.js')}}"></script>
     <script >
     $(function() {
-    $("table#publishers").tablesorter({ sortList: [[0,0]] });
+    $.tablesorter.addParser({
+        id: 'frequencysorter',
+        is: function(s) { 
+            // return false so this parser is not auto detected 
+            return false; 
+        }, 
+        format: function(value, table, cell) {
+            if (value == 'Monthly') {
+                return 0;
+            } else if (value=='Quarterly') {
+                return 1;
+            } else if (value=='Less than quarterly') {
+                return 2;
+            } else {
+                return 3;
+            }
+        },
+        type: 'numeric'
+    }); 
+    $("table#publishers").tablesorter({
+                headers: {
+                    1: {
+                        sorter: 'frequencysorter'
+                       }
+                },
+                sortList: [[1,0],[0,0]] });
     });
 
     </script>
     <h1>Publisher</h1>
     <table class="table" id="publishers">
         <thead>
-        <th>Publisher name</th><th>Registry</th>
+        <th>Publisher name</th>
+        <th>Frequency</th>
+        <th>Frequency notes</th>
+        <th>Registry</th>
         </thead>
         <tbody>
         {% for publisher in publishers %}
         <tr>
-            <td>{{publisher.display_name}}</td><td><a href="http://iatiregistry.org/publisher/{{publisher.name}}"><i class="icon-arrow-right"></i></a></td>
+            <td>{{publisher.display_name}}</td>
+            <td>{{frequencies[publisher.frequency]}}</td>
+            <td>{{publisher.frequency_comment}}</td>
+            <td><a href="http://iatiregistry.org/publisher/{{publisher.name}}"><i class="icon-arrow-right"></i></a></td>
         </tr>
         {% endfor %}
         </tbody>

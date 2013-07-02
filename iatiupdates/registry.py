@@ -21,9 +21,17 @@ PACKAGE_URL="http://iatiregistry.org/api/2/rest/package/%s"
 REVISIONS_URL="http://iatiregistry.org/api/2/search/revision?since_time=%s"
 REVISION_URL="http://iatiregistry.org/api/2/rest/revision/%s"
 
+FREQUENCY_OVERAYEAR=0
 FREQUENCY_MONTHLY=1
 FREQUENCY_QUARTERLY=2
 FREQUENCY_LTQUARTERLY=3
+
+FREQUENCIES = {
+            0: 'Over a year ago',
+            1: 'Monthly',
+            2: 'Quarterly',
+            3: 'Less than quarterly'
+             }
 
 def getNumRealPublishers():
     query = db.session.query(models.PackageGroup
@@ -36,7 +44,9 @@ def getNumRealPublishers():
 def publishers(id=None):
     if id is not None:
         return models.PackageGroup.query.filter_by(id=id).first()
-    return models.PackageGroup.query.order_by('display_name ASC').all()
+    return models.PackageGroup.query.filter(models.PackageGroup.name!=None
+                ).order_by('display_name ASC'
+                ).all()
 
 def packages(id=None):
     if id is not None:
@@ -315,12 +325,29 @@ def calculate_frequency():
         return len(lastfourmonth_dates)
 
     def check_data_avg_months_to_publication(packagegroup_name, packagegroups):
-        earliest_date = min(packagegroups[packagegroup_name])
+
+        pg_dates = set(packagegroups[packagegroup_name])
+
+        # Check how many days ago earliest date was
+        #  If it's greater than 365, use 365 because we should 
+        #  look only at the last calendar year.
+
+        earliest_date = min(pg_dates)
         earliest_date_days_ago=(datetime.datetime.utcnow().date()-earliest_date).days
-        number_months_changes = len(packagegroups[packagegroup_name])
-        avg_days_per_change = earliest_date_days_ago/number_months_changes
-        if avg_days_per_change > 4000:
+        if earliest_date_days_ago >= 365:
+            earliest_date_days_ago = 365
+
+        # Filter out dates that are more than a year old
+
+        oneyear_ago = (datetime.datetime.utcnow()-datetime.timedelta(days=12*30)).date()
+        the_dates = filter(lambda d: d>oneyear_ago, pg_dates)
+
+        number_months_changes = len(the_dates)
+
+        if number_months_changes == 0:
             return 0
+
+        avg_days_per_change = earliest_date_days_ago/number_months_changes
         return avg_days_per_change
 
     def generate_data():
@@ -335,45 +362,48 @@ def calculate_frequency():
         packagegroups = {}
         for row in data:
             try:
-                packagegroups[row.name].append(row.date.date())
+                packagegroups[row.name].append(datetime.date(row.date.date().year, row.date.date().month, 1))
             except KeyError:
                 try:
                     packagegroups[row.name] = []
-                    packagegroups[row.name].append(row.date.date())
+                    packagegroups[row.name].append(datetime.date(row.date.date().year, row.date.date().month, 1))
                 except AttributeError:
                     packagegroups[row.name] = []
-                    packagegroups[row.name].append(datetime.date(year=2000,month=1,day=1))
+                    default_date = datetime.date(year=2000,month=1,day=1)
+                    packagegroups[row.name].append(default_date)
         return packagegroups
 
     def get_frequency():
         packagegroups = generate_data()
         for packagegroup in sorted(packagegroups.keys()):
-            lastfour = check_data_last_four_months(packagegroup, packagegroups)
+            #lastfour = check_data_last_four_months(packagegroup, packagegroups)
             avgmonths = check_data_avg_months_to_publication(packagegroup, packagegroups)
             #if lastfour >=3:
             #    frequency = "monthly"
             #    comment = "Updated " + str(lastfour) + " times in the last 4 months"
             if avgmonths ==0:
-                frequency = "never"
-                comment = "Never updated"
-            elif avgmonths<31:
-                frequency = "monthly"
+                frequency = FREQUENCY_OVERAYEAR
+                comment = "Last updated more than one year ago"
+            elif avgmonths<33:
+                frequency = FREQUENCY_MONTHLY
                 comment = "Updated on average every " + str(avgmonths) + " days"
             elif avgmonths<93:
-                frequency = "quarterly"
+                frequency = FREQUENCY_QUARTERLY
                 comment = "Updated on average every " + str(avgmonths) + " days"
             else:
-                frequency = "less than quarterly"
+                frequency = FREQUENCY_LTQUARTERLY
                 comment = "Updated on average every " + str(avgmonths) + " days"
             yield packagegroup, frequency, comment
 
     out = ""
     for packagegroup, frequency, comment in get_frequency():
         ps = publishers(getPackageGroupByName(packagegroup))
+        if packagegroup is not None:
+            ps.frequency = frequency
+            ps.frequency_comment = comment
+            db.session.add(ps)
+            db.session.commit()
         if not ps:
             continue
         out += str((packagegroup, frequency, comment)) + "<br />"
     return out
-    #publisher.frequency=frequency
-    #publisher.frequency_comment=comment
-    #db.session.add(publisher)

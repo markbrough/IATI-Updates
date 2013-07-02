@@ -28,8 +28,10 @@ def freq():
 @app.route("/publisher/")
 def publisher():
     publishers = registry.publishers()
+    frequencies = registry.FREQUENCIES
     return render_template("publisher.html", 
-                    publishers=publishers)
+                    publishers=publishers,
+                    frequencies=frequencies)
 
 @app.route("/package/")
 def package():
