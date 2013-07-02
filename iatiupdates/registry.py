@@ -232,7 +232,7 @@ def get_packages():
             fields = ['metadata_modified', 'metadata_created',
             'relationships', 'author_email', 'state', 'license_id', 
             'resources', 'tags', 'groups', 'name', 'isopen', 'license', 
-            'notes_rendered', 'ckan_url', 'title', 'extras', 'ratings_count', 
+            'notes_rendered', 'ckan_url', 'title', 'ratings_count', 
             'revision_id', 'notes', 'ratings_average', 'author']
             
             for field in fields:
@@ -240,6 +240,15 @@ def get_packages():
                     setattr(p, field, str(package[field].decode('utf-8')))
                 except Exception:
                     pass
+
+            p.extras = str(package['extras'])
+            p.resources = str(package['resources'])
+            try:
+                p.url = package['resources'][0]['url']
+            except IndexError:
+                pass
+            except KeyError:
+                pass
 
             try:
                 packagegroup = publishers(package["groups"][0])

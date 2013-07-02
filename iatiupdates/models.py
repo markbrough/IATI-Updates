@@ -41,6 +41,7 @@ class Package(db.Model):
     issue_message = Column(UnicodeText)
     issue_date = Column(UnicodeText)
     hash = Column(UnicodeText)
+    url = Column(UnicodeText)
 
     def as_dict(self):
        return {c.name: getattr(self, c.name) for c in self.__table__.columns}

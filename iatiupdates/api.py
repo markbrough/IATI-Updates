@@ -17,6 +17,7 @@ import registry
 import os
 import json
 import datetime
+import ast
 
 class JSONEncoder(json.JSONEncoder):
     def default(self, obj):
@@ -38,7 +39,10 @@ def api_publisher():
     data = []
     publishers = registry.publishers()
     for publisher in publishers:
-        data.append(publisher.as_dict())
+        d = publisher.as_dict()
+        d["extras"] = ast.literal_eval(d["extras"])
+        d["packages"] = ast.literal_eval(d["packages"])
+        data.append(d)
     return jsonify({"data": data})
 
 @app.route("/api/package/")
@@ -46,12 +50,17 @@ def api_package():
     data = []
     packages = registry.packages()
     for package in packages:
-        data.append(package.as_dict())
+        d = package.as_dict()
+        if d["extras"] is not None:
+            d["extras"] = ast.literal_eval(d["extras"])
+        if d["resources"] is not None:
+            d["resources"] = ast.literal_eval(d["resources"])
+        data.append(d)
     return jsonify({"data": data})
 
 
-@app.route("/api/packages/hashes")
-def api_package():
+@app.route("/api/package/hash/")
+def api_package_hash():
     data = []
     packages = registry.packages()
     for package in packages:
