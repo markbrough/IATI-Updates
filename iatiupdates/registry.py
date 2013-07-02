@@ -327,6 +327,7 @@ def calculate_frequency():
         # Get distinct dates for each packagegroup
 
         data = db.session.query(models.PackageGroup.name, models.Revision.date
+                ).outerjoin(models.Package
                 ).outerjoin(models.Revision
                 ).distinct(
                 ).all()
