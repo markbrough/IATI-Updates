@@ -32,30 +32,53 @@ def jsonify(*args, **kwargs):
 
 @app.route("/api/")
 def api():
-    return jsonify({"paths": {'publisher': url_for('api_publisher')}})
+    return jsonify({"paths": {
+                    'publisher': url_for('api_publisher'),
+                    'package': url_for('api_package'),
+                    'package_hash': url_for('api_package_hash'),
+                    'revision': url_for('api_revision')}
+                   })
 
 @app.route("/api/publisher/")
-def api_publisher():
+@app.route("/api/publisher/<id>/")
+def api_publisher(id=None):
     data = []
-    publishers = registry.publishers()
-    for publisher in publishers:
-        d = publisher.as_dict()
+    if id is not None:
+        publishers = registry.publishers(id)
+        d = publishers.as_dict()
         d["extras"] = ast.literal_eval(d["extras"])
         d["packages"] = ast.literal_eval(d["packages"])
         data.append(d)
+    else:
+        publishers = registry.publishers()
+        for publisher in publishers:
+            d = publisher.as_dict()
+            d["extras"] = ast.literal_eval(d["extras"])
+            d["packages"] = ast.literal_eval(d["packages"])
+            data.append(d)
     return jsonify({"data": data})
 
 @app.route("/api/package/")
-def api_package():
+@app.route("/api/package/<id>/")
+def api_package(id=None):
     data = []
-    packages = registry.packages()
-    for package in packages:
-        d = package.as_dict()
+    if id is not None:
+        packages = registry.packages(id)
+        d = packages.as_dict()
         if d["extras"] is not None:
             d["extras"] = ast.literal_eval(d["extras"])
         if d["resources"] is not None:
             d["resources"] = ast.literal_eval(d["resources"])
         data.append(d)
+    else:
+        packages = registry.packages()
+        for package in packages:
+            d = package.as_dict()
+            if d["extras"] is not None:
+                d["extras"] = ast.literal_eval(d["extras"])
+            if d["resources"] is not None:
+                d["resources"] = ast.literal_eval(d["resources"])
+            data.append(d)
     return jsonify({"data": data})
 
 
