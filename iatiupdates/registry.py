@@ -22,8 +22,7 @@ REVISIONS_URL="http://iatiregistry.org/api/2/search/revision?since_time=%s"
 REVISION_URL="http://iatiregistry.org/api/2/rest/revision/%s"
 
 def getNumRealPublishers():
-    query = db.session.query(models.PackageGroup,
-                             models.Package
+    query = db.session.query(models.PackageGroup
                 ).join(models.Package
                 ).filter(models.PackageGroup.name!=''
                 ).filter(models.PackageGroup.name!=None
