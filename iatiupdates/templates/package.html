@@ -16,7 +16,7 @@
         <tbody>
         {% for package in packages %}
         <tr>
-            <td>{{package.title}}</td><td>{% if package.issue_type %}{{package.issue_type}}{% endif %}</td><td><a href="http://iatiregistry.org/dataset/{{package.name}}"><i class="icon-arrow-right"></i></a></td>
+            <td>{{package.name}}</td><td>{% if package.issue_type %}{{package.issue_type}}{% endif %}</td><td><a href="http://iatiregistry.org/dataset/{{package.name}}"><i class="icon-arrow-right"></i></a></td>
         </tr>
         {% endfor %}
         </tbody>
