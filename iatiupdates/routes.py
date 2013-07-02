@@ -17,7 +17,9 @@ import os
 
 @app.route("/")
 def home():
-    return render_template("dashboard.html")
+    num_publishers = registry.getNumRealPublishers()
+    return render_template("dashboard.html",
+            num_publishers=num_publishers)
 
 @app.route("/publisher/")
 def publisher():
