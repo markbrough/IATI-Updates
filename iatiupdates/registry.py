@@ -186,8 +186,8 @@ def get_packagegroups():
         print packagegroup
 
         # TODO: remove this; allow all packagegroups to be updated
-        #if packagegroup in current_packagegroups:
-        #    continue
+        if packagegroup in current_packagegroups:
+            continue
         packagegroup_req = urllib2.Request(PACKAGEGROUP_URL % (packagegroup))
         packagegroup_webfile = urllib2.urlopen(packagegroup_req)
         packagegroup_data = json.loads(packagegroup_webfile.read())
