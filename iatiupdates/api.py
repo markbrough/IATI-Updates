@@ -39,13 +39,36 @@ def api():
                     'revision': url_for('api_revision')}
                    })
 
+def frequentify(frequency):
+    FREQUENCIES = {
+            0: 'Over a year ago',
+            1: 'Monthly',
+            2: 'Quarterly',
+            3: 'Less than quarterly',
+            None: ''
+         }
+    return FREQUENCIES[frequency]
+
 @app.route("/api/publisher/frequency/")
 @app.route("/api/publisher/<packagegroup_name>/frequency/")
 def api_publisher_frequency(packagegroup_name=None):
+    data = []
     if packagegroup_name is not None:
-        data = registry.publishers_frequency(packagegroup_name)
+        publisher = registry.publishers_frequency(packagegroup_name)
+        data.append({
+                'publisher': publisher.name,
+                'frequency_code': publisher.frequency,
+                'frequency': frequentify(publisher.frequency),
+                'frequency_comment': publisher.frequency_comment
+            })
     else:
-        data = registry.publishers_frequency()
+        for publisher in registry.publishers_frequency():
+            data.append({
+                'publisher': publisher.name,
+                'frequency_code': publisher.frequency,
+                'frequency': frequentify(publisher.frequency),
+                'frequency_comment': publisher.frequency_comment
+            })
     return jsonify({"data":data})
 
 
