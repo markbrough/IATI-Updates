@@ -402,6 +402,11 @@ def calculate_frequency():
                     packagegroups[row.name] = []
                     default_date = datetime.date(year=2000,month=1,day=1)
                     packagegroups[row.name].append(default_date)
+            except AttributeError:
+                packagegroups[row.name] = []
+                default_date = datetime.date(year=2000,month=1,day=1)
+                packagegroups[row.name].append(default_date)
+                
         return packagegroups
 
     def get_frequency():
