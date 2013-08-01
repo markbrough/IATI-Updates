@@ -434,12 +434,12 @@ def calculate_frequency():
     out = ""
     for packagegroup, frequency, comment in get_frequency():
         ps = publishers(getPackageGroupByName(packagegroup))
+        if not ps:
+            continue
         if packagegroup is not None:
             ps.frequency = frequency
             ps.frequency_comment = comment
             db.session.add(ps)
             db.session.commit()
-        if not ps:
-            continue
         out += str((packagegroup, frequency, comment)) + "<br />"
     return out
