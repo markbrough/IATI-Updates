@@ -40,11 +40,11 @@ def api():
                    })
 
 @app.route("/api/publisher/")
-@app.route("/api/publisher/<id>/")
-def api_publisher(id=None):
+@app.route("/api/publisher/<packagegroup_name>/")
+def api_publisher(packagegroup_name=None):
     data = []
-    if id is not None:
-        publishers = registry.publishers(id)
+    if packagegroup_name is not None:
+        publishers = registry.publishers(packagegroup_name)
         d = publishers.as_dict()
         d["extras"] = ast.literal_eval(d["extras"])
         d["packages"] = ast.literal_eval(d["packages"])

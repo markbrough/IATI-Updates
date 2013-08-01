@@ -50,9 +50,9 @@ def getFrequencyTotals():
                     ).all()
     return query
 
-def publishers(id=None):
-    if id is not None:
-        return models.PackageGroup.query.filter_by(id=id).first()
+def publishers(name=None):
+    if name is not None:
+        return models.PackageGroup.query.filter_by(name=name).first()
     return models.PackageGroup.query.filter(models.PackageGroup.name!=None
                 ).order_by('display_name ASC'
                 ).all()
