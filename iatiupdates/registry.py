@@ -57,6 +57,19 @@ def publishers(name=None):
                 ).order_by('display_name ASC'
                 ).all()
 
+def publishers_frequency(name=None):
+    if name is not None:
+        return db.session.query(models.PackageGroup.name,
+                                models.PackageGroup.frequency,
+                                models.PackageGroup.frequency_comment
+                    ).filter(models.PackageGroup.name==name
+                    ).first()
+    else:
+        return db.session.query(models.PackageGroup.name,
+                                models.PackageGroup.frequency,
+                                models.PackageGroup.frequency_comment
+                    ).all()
+
 def packages(id=None):
     if id is not None:
         return models.Package.query.filter_by(id=id).first()

@@ -39,6 +39,16 @@ def api():
                     'revision': url_for('api_revision')}
                    })
 
+@app.route("/api/publisher/frequency/")
+@app.route("/api/publisher/<packagegroup_name>/frequency/")
+def api_publisher_frequency(packagegroup_name=None):
+    if packagegroup_name is not None:
+        data = registry.publishers_frequency(packagegroup_name)
+    else:
+        data = registry.publishers_frequency()
+    return jsonify({"data":data})
+
+
 @app.route("/api/publisher/")
 @app.route("/api/publisher/<packagegroup_name>/")
 def api_publisher(packagegroup_name=None):
