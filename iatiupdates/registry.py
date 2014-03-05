@@ -198,9 +198,6 @@ def get_packagegroups():
     for packagegroup in packagegroups_list:
         print packagegroup
 
-        # TODO: remove this; allow all packagegroups to be updated
-        if packagegroup in current_packagegroups:
-            continue
         packagegroup_req = urllib2.Request(PACKAGEGROUP_URL % (packagegroup))
         packagegroup_webfile = urllib2.urlopen(packagegroup_req)
         packagegroup_data = json.loads(packagegroup_webfile.read())
@@ -225,14 +222,8 @@ def get_packages():
         packages_list_req = urllib2.Request(PACKAGES_URL)
         packages_list_webfile = urllib2.urlopen(packages_list_req)
         packages_list = json.loads(packages_list_webfile.read())
-    
-        #if (("results" in packages_list) and (packages_list["results"])):
-        
+           
         for package_id in packages_list:
-
-            #TODO: remove this so that all packages get updated
-            #if package_id in current_packages:
-            #    continue
 
             print "Requesting metadata for package", package_id
 
