@@ -217,10 +217,12 @@ def get_packagegroups():
 
 def get_packages(update_existing_ones=False):
     current_packages = get_current_packages()
+    print "There are", len(current_packages), "current packages"
 
     packages_list_req = urllib2.Request(PACKAGES_URL)
     packages_list_webfile = urllib2.urlopen(packages_list_req)
     packages_list = json.loads(packages_list_webfile.read())
+    print "There are", len(packages_list), "packages on the Registry"
         
     for package_id in packages_list:
 
