@@ -215,15 +215,20 @@ def get_packagegroups():
         db.session.add(pg)
         db.session.commit()
 
-def get_packages():
+def get_packages(update_existing_ones=False):
     current_packages = get_current_packages()
     offset = 0
     while True:
         packages_list_req = urllib2.Request(PACKAGES_URL)
         packages_list_webfile = urllib2.urlopen(packages_list_req)
         packages_list = json.loads(packages_list_webfile.read())
-           
+            
         for package_id in packages_list:
+
+            # Generally ignore existing packages
+            if update_existing_ones==False:
+                if package_id in current_packages:
+                    continue
 
             print "Requesting metadata for package", package_id
 
