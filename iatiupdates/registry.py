@@ -256,12 +256,14 @@ def get_packages():
 
             p.extras = str(package['extras'])
             p.resources = str(package['resources'])
-            try:
+
+            if len(package['resources']) >0:
+                p.hash = package['resources'][0]['hash']
                 p.url = package['resources'][0]['url']
-            except IndexError:
-                pass
-            except KeyError:
-                pass
+            else:
+                # Don't add packages without a URL... weird things could happen 
+                # (not sure what exactly)
+                continue
 
             try:
                 packagegroup = publishers(package["groups"][0])
@@ -272,17 +274,15 @@ def get_packages():
             except KeyError:
                 pass
 
-            try:
+            if package['extras'].get('issue_type'):
                 p.issue_type = getOrCreateIssueType(package['extras']['issue_type']).id
                 p.issue_date = package['extras']['issue_date']
                 p.issue_message = package['extras']['issue_message']
-            except KeyError:
+            else:
                 p.issue_type = None
                 p.issue_date = None
                 p.issue_message = None
-
-            p.hash = package['resources'][0]['hash']
-
+            
             db.session.add(p)
             db.session.commit()
     
