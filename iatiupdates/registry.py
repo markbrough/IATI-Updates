@@ -217,70 +217,69 @@ def get_packagegroups():
 
 def get_packages(update_existing_ones=False):
     current_packages = get_current_packages()
-    offset = 0
-    while True:
-        packages_list_req = urllib2.Request(PACKAGES_URL)
-        packages_list_webfile = urllib2.urlopen(packages_list_req)
-        packages_list = json.loads(packages_list_webfile.read())
-            
-        for package_id in packages_list:
 
-            # Generally ignore existing packages
-            if update_existing_ones==False:
-                if package_id in current_packages:
-                    continue
+    packages_list_req = urllib2.Request(PACKAGES_URL)
+    packages_list_webfile = urllib2.urlopen(packages_list_req)
+    packages_list = json.loads(packages_list_webfile.read())
+        
+    for package_id in packages_list:
 
-            print "Requesting metadata for package", package_id
-
-            package_req = urllib2.Request(PACKAGE_URL % (package_id))
-            package_webfile = urllib2.urlopen(package_req)
-            package = json.loads(package_webfile.read())
-
-            p = getCreatePackage(package['id'])
-
-            fields = ['metadata_modified', 'metadata_created',
-            'relationships', 'author_email', 'state', 'license_id', 
-            'resources', 'tags', 'groups', 'name', 'isopen', 'license', 
-            'notes_rendered', 'ckan_url', 'title', 'ratings_count', 
-            'revision_id', 'notes', 'ratings_average', 'author']
-            
-            for field in fields:
-                try:
-                    setattr(p, field, str(package[field].decode('utf-8')))
-                except Exception:
-                    pass
-
-            p.extras = str(package['extras'])
-            p.resources = str(package['resources'])
-
-            if len(package['resources']) >0:
-                p.hash = package['resources'][0]['hash']
-                p.url = package['resources'][0]['url']
-            else:
-                # Don't add packages without a URL... weird things could happen 
-                # (not sure what exactly)
+        # Generally ignore existing packages
+        if update_existing_ones==False:
+            if package_id in current_packages:
                 continue
 
+        print "Requesting metadata for package", package_id
+
+        package_req = urllib2.Request(PACKAGE_URL % (package_id))
+        package_webfile = urllib2.urlopen(package_req)
+        package = json.loads(package_webfile.read())
+
+        p = getCreatePackage(package['id'])
+
+        fields = ['metadata_modified', 'metadata_created',
+        'relationships', 'author_email', 'state', 'license_id', 
+        'resources', 'tags', 'groups', 'name', 'isopen', 'license', 
+        'notes_rendered', 'ckan_url', 'title', 'ratings_count', 
+        'revision_id', 'notes', 'ratings_average', 'author']
+        
+        for field in fields:
             try:
-                packagegroup = publishers(package["groups"][0])
-                p.packagegroup_id = packagegroup.id
-                p.packagegroup_name = packagegroup.name
-            except IndexError:
-                pass
-            except KeyError:
+                setattr(p, field, str(package[field].decode('utf-8')))
+            except Exception:
                 pass
 
-            if package['extras'].get('issue_type'):
-                p.issue_type = getOrCreateIssueType(package['extras']['issue_type']).id
-                p.issue_date = package['extras']['issue_date']
-                p.issue_message = package['extras']['issue_message']
-            else:
-                p.issue_type = None
-                p.issue_date = None
-                p.issue_message = None
-            
-            db.session.add(p)
-            db.session.commit()
+        p.extras = str(package['extras'])
+        p.resources = str(package['resources'])
+
+        if len(package['resources']) >0:
+            p.hash = package['resources'][0]['hash']
+            p.url = package['resources'][0]['url']
+        else:
+            # Don't add packages without a URL... weird things could happen 
+            # (not sure what exactly)
+            continue
+
+        try:
+            packagegroup = publishers(package["groups"][0])
+            p.packagegroup_id = packagegroup.id
+            p.packagegroup_name = packagegroup.name
+        except IndexError:
+            pass
+        except KeyError:
+            pass
+
+        if package['extras'].get('issue_type'):
+            p.issue_type = getOrCreateIssueType(package['extras']['issue_type']).id
+            p.issue_date = package['extras']['issue_date']
+            p.issue_message = package['extras']['issue_message']
+        else:
+            p.issue_type = None
+            p.issue_date = None
+            p.issue_message = None
+        
+        db.session.add(p)
+        db.session.commit()
     
 def get_package_id(revision_data):
     try:
