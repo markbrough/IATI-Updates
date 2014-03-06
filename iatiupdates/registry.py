@@ -275,7 +275,7 @@ def get_packages(update_existing_ones=False):
             # (not sure what exactly)
             continue
 
-        if "organization" in package:
+        if (package.get('organization') and len(package["organization"])>0):
             # CKAN v2 API changed!!
             packagegroup = publishers(package["organization"]["name"])
             p.packagegroup_id = packagegroup.id
