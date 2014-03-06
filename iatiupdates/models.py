@@ -60,7 +60,7 @@ class PackageGroup(db.Model):
     name = Column(UnicodeText)
     frequency = Column(Integer)
     frequency_comment = Column(UnicodeText)
-    deleted = Column(Boolean)
+    deleted = Column(Boolean, default=False)
 
     def as_dict(self):
        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
