@@ -340,9 +340,7 @@ def get_revisions():
     print "got revisions list"
         
     for revision in revisions_list:
-        print revision
         if revision in current_revisions:
-            print "skipping"
             continue
         revision_req = urllib2.Request(REVISION_URL % (revision))
         revision_webfile = urllib2.urlopen(revision_req)
