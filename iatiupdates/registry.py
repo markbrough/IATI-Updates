@@ -38,6 +38,7 @@ def getNumRealPublishers():
     query = db.session.query(models.PackageGroup
                 ).join(models.Package
                 ).filter(models.PackageGroup.name!=None
+                ).filter(models.PackageGroup.deleted!=True
                 ).all()
     return len(query)
 
