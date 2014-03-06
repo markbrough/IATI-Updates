@@ -75,6 +75,7 @@ class Revision(db.Model):
     group_id = Column(UnicodeText, ForeignKey('packagegroup.id', ondelete='CASCADE'))
     message_type = Column(UnicodeText)
     message_text = Column(UnicodeText)
+    message_method = Column(UnicodeText)
     date = Column(DateTime)
 
     def as_dict(self):
