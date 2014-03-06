@@ -240,7 +240,7 @@ def get_packages(update_existing_ones=False):
     for package_id in packages_list:
 
         # Generally ignore existing packages
-        if update_existing_ones==False:
+        if not update_existing_ones:
             if package_id in current_packages:
                 continue
 
@@ -275,14 +275,11 @@ def get_packages(update_existing_ones=False):
             # (not sure what exactly)
             continue
 
-        try:
-            packagegroup = publishers(package["groups"][0])
+        if "organization" in package:
+            # CKAN v2 API changed!!
+            packagegroup = publishers(package["organization"]["name"])
             p.packagegroup_id = packagegroup.id
             p.packagegroup_name = packagegroup.name
-        except IndexError:
-            pass
-        except KeyError:
-            pass
 
         if package['extras'].get('issue_type'):
             p.issue_type = getOrCreateIssueType(package['extras']['issue_type']).id
