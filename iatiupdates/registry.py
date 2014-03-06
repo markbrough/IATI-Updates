@@ -318,7 +318,7 @@ def get_revision_type(revision_message):
         data = revision_message.split(": ")
         if data[0] in ["REST API", 
                        "Daily archiver", 
-                       "CSV Import"]:
+                       "CSV import"]:
             method = data[1].split(" ")[0].lower()
         else:
             method = ""
