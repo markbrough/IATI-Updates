@@ -316,11 +316,19 @@ def get_packagegroup_id(revision_data):
 def get_revision_type(revision_message):
     try:
         data = revision_message.split(": ")
+        if data[0] in ["REST API", 
+                       "Daily archiver", 
+                       "CSV Import"]:
+            method = data[1].split(" ")[0].lower()
+        else:
+            method = ""
         return {"type": data[0],
-                "text": data[1] }
+                "text": data[1],
+                "method": method }
     except Exception:
         return {"type": "",
-                "text": ""}
+                "text": "",
+                "method": ""}
 
 def get_revisions():
     current_revisions = get_current_revisions()
@@ -352,6 +360,7 @@ def get_revisions():
         rev.message = revision_data["message"]
         rev.message_type = revision_message["type"]
         rev.messsage_text = revision_message["text"]
+        rev.message_method = revision_message["method"]
         print "saving"
         db.session.add(rev)
         db.session.commit()
