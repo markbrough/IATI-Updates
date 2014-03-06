@@ -14,7 +14,7 @@ from datetime import datetime
 class Package(db.Model):
     __tablename__ = 'package'
     id = Column(UnicodeText, primary_key=True)
-    packagegroup_id = Column(UnicodeText, ForeignKey('packagegroup.id'))
+    packagegroup_id = Column(UnicodeText, ForeignKey('packagegroup.id', ondelete='CASCADE'))
     metadata_created = Column(DateTime)
     metadata_modified = Column(DateTime)
     relationships = Column(UnicodeText)
@@ -37,7 +37,7 @@ class Package(db.Model):
     ratings_average = Column(UnicodeText)
     author = Column(UnicodeText)
     packagegroup_name = Column(UnicodeText)
-    issue_type = Column(UnicodeText, ForeignKey('issuetype.id'))
+    issue_type = Column(UnicodeText, ForeignKey('issuetype.id', ondelete='CASCADE'))
     issue_message = Column(UnicodeText)
     issue_date = Column(UnicodeText)
     hash = Column(UnicodeText)
@@ -68,10 +68,10 @@ class Revision(db.Model):
     __tablename__ = 'revision'
     id = Column(UnicodeText, primary_key=True)
     timestamp = Column(DateTime)
-    package_id = Column(UnicodeText, ForeignKey('package.id'))
+    package_id = Column(UnicodeText, ForeignKey('package.id', ondelete='CASCADE'))
     message = Column(UnicodeText)
     author = Column(UnicodeText)
-    group_id = Column(UnicodeText, ForeignKey('packagegroup.id'))
+    group_id = Column(UnicodeText, ForeignKey('packagegroup.id', ondelete='CASCADE'))
     message_type = Column(UnicodeText)
     message_text = Column(UnicodeText)
     date = Column(DateTime)

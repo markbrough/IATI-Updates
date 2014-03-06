@@ -37,7 +37,6 @@ FREQUENCIES = {
 def getNumRealPublishers():
     query = db.session.query(models.PackageGroup
                 ).join(models.Package
-                ).filter(models.PackageGroup.name!=''
                 ).filter(models.PackageGroup.name!=None
                 ).all()
     return len(query)
@@ -187,13 +186,43 @@ def getOrCreateIssueType(id):
     print "issuetype was there, retunring"
     return issuetype
 
-def get_packagegroups():
+def get_packagegroups(cleanup=False):
     current_packagegroups = get_current_packagegroups()
     print current_packagegroups
 
     packagegroups_list_req = urllib2.Request(PACKAGEGROUPS_URL)
     packagegroups_list_webfile = urllib2.urlopen(packagegroups_list_req)
     packagegroups_list = json.loads(packagegroups_list_webfile.read())
+
+    # Also mark packagegroups for deletion if they're not there anymore
+    # This should really be done in the model.
+    disappeared = 0
+    for current in current_packagegroups:
+        if current not in packagegroups_list:
+            disappeared +=1
+            pg = models.PackageGroup.query.filter_by(id=current
+                ).first()
+            print pg.name, "is no longer on the Registry"
+            if cleanup:
+                revs = models.Revision.query.filter_by(group_id=pg.id
+                    ).all()
+                for rev in revs:
+                    db.session.delete(rev)
+                db.session.commit()
+                pkgs = models.Package.query.filter_by(packagegroup_id=pg.id
+                    ).all()
+                for pkg in pkgs:
+                    revs = models.Revision.query.filter_by(package_id=pkg.id
+                        ).all()
+                    for rev in revs:
+                        db.session.delete(rev)
+                    db.session.commit()
+                    db.session.delete(pkg)
+                db.session.commit()
+                db.session.delete(pg)
+                db.session.commit()
+
+    print disappeared, "packagegroups no longer on the Registry"
     
     for packagegroup in packagegroups_list:
         print packagegroup
