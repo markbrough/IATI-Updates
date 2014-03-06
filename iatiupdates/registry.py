@@ -203,24 +203,8 @@ def get_packagegroups(cleanup=False):
             pg = models.PackageGroup.query.filter_by(id=current
                 ).first()
             print pg.name, "is no longer on the Registry"
-            if cleanup:
-                revs = models.Revision.query.filter_by(group_id=pg.id
-                    ).all()
-                for rev in revs:
-                    db.session.delete(rev)
-                db.session.commit()
-                pkgs = models.Package.query.filter_by(packagegroup_id=pg.id
-                    ).all()
-                for pkg in pkgs:
-                    revs = models.Revision.query.filter_by(package_id=pkg.id
-                        ).all()
-                    for rev in revs:
-                        db.session.delete(rev)
-                    db.session.commit()
-                    db.session.delete(pkg)
-                db.session.commit()
-                db.session.delete(pg)
-                db.session.commit()
+            pg.deleted = True
+            db.session.commit()
 
     print disappeared, "packagegroups no longer on the Registry"
     
