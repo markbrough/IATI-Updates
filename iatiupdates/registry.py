@@ -333,12 +333,13 @@ def get_revision_type(revision_message):
 
 def get_revisions():
     current_revisions = get_current_revisions()
-    revisions_list_req = urllib2.Request(REVISIONS_URL % ("2010-01-01"))
+    revisions_list_req = urllib2.Request(REVISIONS_URL % ("2013-01-01"))
     revisions_list_webfile = urllib2.urlopen(revisions_list_req)
     revisions_list = json.loads(revisions_list_webfile.read())
 
     print "got revisions list"
         
+    revcount = 0
     for revision in revisions_list:
         if revision in current_revisions:
             continue
@@ -362,7 +363,9 @@ def get_revisions():
         rev.message_method = revision_message["method"]
         print "saving"
         db.session.add(rev)
-        db.session.commit()
+        if revcount > 500:
+            db.session.commit()
+            revcount = 0
 
 def calculate_frequency():
     def check_data_last_four_months(packagegroup_name, packagegroups):
@@ -448,7 +451,7 @@ def calculate_frequency():
 
     out = ""
     for packagegroup, frequency, comment in get_frequency():
-        ps = publishers(getPackageGroupByName(packagegroup))
+        ps = publishers(packagegroup)
         if not ps:
             continue
         if packagegroup is not None:
