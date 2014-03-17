@@ -38,6 +38,14 @@ def publisher():
                     frequencies=frequencies,
                     orgtypes=dict(registry.ORGANIZATION_TYPES))
 
+@app.route("/publisher/<packagegroup_name>/updates/")
+def publisher_updates(packagegroup_name):
+    publisher = registry.publishers(packagegroup_name)
+    updated_dates = registry.getUpdatedDates(packagegroup_name)
+    return render_template("publisher_updates.html",
+            publisher = publisher,
+            updated_dates = updated_dates)
+
 @app.route("/package/")
 def package():
     packages = registry.packages()
