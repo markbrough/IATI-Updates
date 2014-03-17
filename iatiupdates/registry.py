@@ -47,6 +47,32 @@ FREQUENCIES = {
             3: 'Less than quarterly'
              }
 
+def getUpdatedDates(publisher_name):
+    # Get distinct dates for each packagegroup
+
+    data = db.session.query(models.Revision.date,
+                            func.count(models.Package.id)
+            ).outerjoin(models.Package
+            ).outerjoin(models.PackageGroup
+            ).distinct(
+            ).filter(models.PackageGroup.name==publisher_name
+            ).group_by(models.Revision.date
+            ).all()
+
+    dates = []
+    for row in data:
+        try:
+            dates.append((str(datetime.date(row.date.date().year, row.date.date().month, 1)), row[1]))
+        except KeyError:
+            pass
+        except AttributeError:
+            pass
+    dates = sorted(set(dates))
+    dates_new = []
+    for d in dates:
+        dates_new.append({"date": d[0], "updates": d[1]})
+    return dates_new
+
 def getNumRealPublishers():
     query = db.session.query(models.PackageGroup
                 ).join(models.Package
