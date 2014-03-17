@@ -39,12 +39,12 @@ def publisher():
                     orgtypes=dict(registry.ORGANIZATION_TYPES))
 
 @app.route("/publisher/<packagegroup_name>/updates/")
-def publisher_updates(packagegroup_name):
+@app.route("/publisher/<packagegroup_name>/updates/<message_method>")
+def publisher_updates(packagegroup_name, message_method=None):
     publisher = registry.publishers(packagegroup_name)
-    updated_dates = registry.getUpdatedDates(packagegroup_name)
     return render_template("publisher_updates.html",
             publisher = publisher,
-            updated_dates = updated_dates)
+            message_method = message_method)
 
 @app.route("/package/")
 def package():
