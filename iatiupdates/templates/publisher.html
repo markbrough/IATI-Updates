@@ -43,7 +43,7 @@
         </thead>
         <tbody>
         {% for publisher in publishers %}
-        <tr>
+        <tr{% if publisher.deleted %} class="muted"{% endif %}>
             <td><a id="{{publisher.name}}"></a>{{publisher.display_name}}</td>
             <td>{{frequencies[publisher.frequency]}}</td>
             <td>{{publisher.frequency_comment}}</td>
