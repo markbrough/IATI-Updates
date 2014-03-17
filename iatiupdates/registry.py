@@ -51,7 +51,7 @@ def getUpdatedDates(publisher_name, message_method=None):
     # Get distinct dates for each packagegroup
 
     q = db.session.query(models.Revision.date,
-                            func.count(models.Package.id)
+                        func.count(models.Revision.package_id)
             ).outerjoin(models.Package
             ).outerjoin(models.PackageGroup
             ).distinct(
@@ -63,18 +63,16 @@ def getUpdatedDates(publisher_name, message_method=None):
     data = q.group_by(models.Revision.date
             ).all()
 
-    dates = []
+    dates = {}
     for row in data:
-        try:
-            dates.append((str(datetime.date(row.date.date().year, row.date.date().month, 1)), row[1]))
-        except KeyError:
-            pass
-        except AttributeError:
-            pass
-    dates = sorted(set(dates))
+        thedate = str(datetime.date(row.date.date().year, row.date.date().month, row.date.date().day))
+        if thedate not in dates:
+            dates[thedate] = row[1]
+        else:
+            dates[thedate] += row[1]
     dates_new = []
-    for d in dates:
-        dates_new.append({"date": d[0], "updates": d[1]})
+    for d in sorted(dates):
+        dates_new.append({"date": d, "updates": dates[d]})
     return dates_new
 
 def getNumRealPublishers():
