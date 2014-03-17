@@ -29,6 +29,10 @@ def home():
 def freq():
     return registry.calculate_frequency()
 
+@app.route("/revs_parse/")
+def revs_parse():
+    return registry.parse_existing_revision_methods()
+
 @app.route("/publisher/")
 def publisher():
     publishers = registry.publishers()
@@ -39,7 +43,7 @@ def publisher():
                     orgtypes=dict(registry.ORGANIZATION_TYPES))
 
 @app.route("/publisher/<packagegroup_name>/updates/")
-@app.route("/publisher/<packagegroup_name>/updates/<message_method>")
+@app.route("/publisher/<packagegroup_name>/updates/<message_method>/")
 def publisher_updates(packagegroup_name, message_method=None):
     publisher = registry.publishers(packagegroup_name)
     return render_template("publisher_updates.html",
