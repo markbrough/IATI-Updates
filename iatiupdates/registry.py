@@ -140,6 +140,8 @@ def revisions_data(offset, limit, conditions):
             conditions_query = conditions_query.filter(models.PackageGroup.name==conditions['packagegroup_name'])
         if 'exclude_iatiarchiver' in conditions:
             conditions_query = conditions_query.filter(models.Revision.author!='iati-archiver')
+        if 'message_method' in conditions:
+            conditions_query = conditions_query.filter(models.Revision.message_method==conditions['message_method'])
     else:
         conditions_query = query
 
