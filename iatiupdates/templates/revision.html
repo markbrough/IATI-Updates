@@ -11,8 +11,20 @@
     <h1>Revisions</h1>
     <div class="pull-right">
             <label for="include_iati_archiver"><input type="checkbox" id="include_iati_archiver" /> Include IATI Archiver</label>
-            <label for="limit">Show records: <input type="text" id="limit" value="50" /></label>
-            <label for="offset">Starting at: <input type="text" id="offset" value="0" /></label>
+            <div class="input-append input-prepend">
+                <span class="add-on">Show</span>
+                <input type="text" id="limit" value="50" class="span1" />
+                <span class="add-on">rows, starting at row</span>
+                <input type="text" id="offset" value="0" class="span1" />
+            </div>
+
+            <label for="message_method_select">Type: <select name="message_method_select" id="method_select" >
+            <option value="all">All</option>
+            <option value="create">Create</option>
+            <option value="update">Update</option>
+            <option value="delete">Delete</option>
+            <option value=""></option>
+            </select>
         </div>
         <label for="publisher_select">By Publisher: <select name="publisher_select" id="publisher_select" >
         <option value="">Loading publishers...</option>
@@ -52,6 +64,10 @@
         offset = 0;
         $("#offset").val(offset);
         $(".previous").addClass("disabled");
+        get_packagegroup_data();
+    });
+
+    $("#method_select").change(function(e){
         get_packagegroup_data();
     });
 
@@ -96,6 +112,14 @@
                 var conditions = '"packagegroup_name":"' + packagegroup_name + '", "exclude_iatiarchiver":""';
             }
         }
+        method = $("#method_select").val();
+        if (method != "all") {
+            if (conditions != "") {
+                conditions = conditions + ", ";
+            }
+            conditions = conditions + '"message_method":"' + method+'"'
+        }
+
         if (conditions != "") {
             conditions = "&conditions={" + conditions + "}";
         }
