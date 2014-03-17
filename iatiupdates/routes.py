@@ -35,7 +35,8 @@ def publisher():
     frequencies = registry.FREQUENCIES
     return render_template("publisher.html", 
                     publishers=publishers,
-                    frequencies=frequencies)
+                    frequencies=frequencies,
+                    orgtypes=dict(registry.ORGANIZATION_TYPES))
 
 @app.route("/package/")
 def package():
