@@ -48,7 +48,7 @@
             <td>{{frequencies[publisher.frequency]}}</td>
             <td>{{publisher.frequency_comment}}</td>
             <td>{{orgtypes[publisher.orgtype]}}</td>
-            <td><a href="http://iatiregistry.org/publisher/{{publisher.name}}"><i class="icon-arrow-right"></i></a></td>
+            <td>{% if publisher.deleted %}<i class="icon-remove" title="This publisher has been deleted"></i>{% else %}<a href="http://iatiregistry.org/publisher/{{publisher.name}}"><i class="icon-arrow-right"></i></a>{% endif %}</td>
         </tr>
         {% endfor %}
         </tbody>
