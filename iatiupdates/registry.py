@@ -47,16 +47,20 @@ FREQUENCIES = {
             3: 'Less than quarterly'
              }
 
-def getUpdatedDates(publisher_name):
+def getUpdatedDates(publisher_name, message_method=None):
     # Get distinct dates for each packagegroup
 
-    data = db.session.query(models.Revision.date,
+    q = db.session.query(models.Revision.date,
                             func.count(models.Package.id)
             ).outerjoin(models.Package
             ).outerjoin(models.PackageGroup
             ).distinct(
-            ).filter(models.PackageGroup.name==publisher_name
-            ).group_by(models.Revision.date
+            ).filter(models.PackageGroup.name==publisher_name)
+
+    if message_method is not None:
+        q = q.filter(models.Revision.message_method==message_method)
+
+    data = q.group_by(models.Revision.date
             ).all()
 
     dates = []
