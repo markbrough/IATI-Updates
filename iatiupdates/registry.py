@@ -226,6 +226,8 @@ def get_packagegroups(cleanup=False):
         pg.revision_id = packagegroup_data["revision_id"]
         pg.packages = str(packagegroup_data["packages"])
         pg.name = packagegroup_data["name"]
+        if packagegroup_data.get('extras') is not None:
+            pg.orgtype = packagegroup_data['extras'].get('publisher_organization_type')
         db.session.add(pg)
         db.session.commit()
 
