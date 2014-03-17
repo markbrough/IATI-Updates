@@ -71,6 +71,9 @@ def api_publisher_frequency(packagegroup_name=None):
             })
     return jsonify({"data":data})
 
+@app.route("/api/publisher/<packagegroup_name>/updates/")
+def api_publisher_updates(packagegroup_name):
+    return jsonify({"dates": registry.getUpdatedDates(packagegroup_name)})
 
 @app.route("/api/publisher/")
 @app.route("/api/publisher/<packagegroup_name>/")
