@@ -52,7 +52,7 @@ files, and how many packages were updated.</p>
 
 jQuery(function($) {
 
-  var url = "{{url_for('api_publisher_updates', packagegroup_name=publisher.name)}}";
+  var url = "{{url_for('api_publisher_updates', packagegroup_name=publisher.name, message_method=message_method)}}";
   window.dataExplorer = null;
   window.explorerDiv = $('#elementsgraph');
 
