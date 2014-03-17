@@ -412,6 +412,30 @@ def get_revisions():
             db.session.commit()
             revcount = 0
 
+def parse_existing_revision_methods():
+    def get_revs(offset):
+        revs = db.session.query(models.Revision
+                ).limit(10000
+                ).offset(offset
+                ).all()
+        return revs
+    offset = 0
+    while True:
+        revs = get_revs(offset)
+        if not revs:
+            break
+        for rev in revs:
+            revmsg = rev.message
+            revision_message = get_revision_type(revmsg)
+            rev.message_type = revision_message["type"]
+            rev.messsage_text = revision_message["text"]
+            rev.message_method = revision_message["method"]
+            db.session.add(rev)
+        offset += 10000
+        print "Getting", offset
+        db.session.commit()
+    return "Done"
+
 def calculate_frequency():
     def check_data_last_four_months(packagegroup_name, packagegroups):
         fourmonths_ago = (datetime.datetime.utcnow()-datetime.timedelta(days=4*30)).date()
