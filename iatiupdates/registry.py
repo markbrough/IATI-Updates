@@ -27,6 +27,19 @@ FREQUENCY_MONTHLY=1
 FREQUENCY_QUARTERLY=2
 FREQUENCY_LTQUARTERLY=3
 
+ORGANIZATION_TYPES = [
+    ('80', 'Academic, Training and Research'),
+    ('60', 'Foundation'),
+    ('10', 'Government'),
+    ('21', 'International NGO'),
+    ('40', 'Multilateral'),
+    ('22', 'National NGO'),
+    ('15', 'Other Public Sector'),
+    ('70', 'Private Sector'),
+    ('30', 'Public Private Partnership'),
+    ('23', 'Regional NGO'),
+]
+
 FREQUENCIES = {
             0: 'Over a year ago',
             1: 'Monthly',
