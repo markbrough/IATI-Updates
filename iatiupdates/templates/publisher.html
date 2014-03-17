@@ -38,6 +38,7 @@
         <th>Publisher name</th>
         <th>Frequency</th>
         <th>Frequency notes</th>
+        <th>Organisation type</th>
         <th>Registry</th>
         </thead>
         <tbody>
@@ -46,6 +47,7 @@
             <td><a id="{{publisher.name}}"></a>{{publisher.display_name}}</td>
             <td>{{frequencies[publisher.frequency]}}</td>
             <td>{{publisher.frequency_comment}}</td>
+            <td>{{orgtypes[publisher.orgtype]}}</td>
             <td><a href="http://iatiregistry.org/publisher/{{publisher.name}}"><i class="icon-arrow-right"></i></a></td>
         </tr>
         {% endfor %}
