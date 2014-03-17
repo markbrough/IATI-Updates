@@ -1,0 +1,124 @@
+{% set active_page='timeline'%}{% extends "layout.html" %}
+{% block title %}Timeline {% endblock %}
+{% block content %}
+
+<style>
+    .editor-type, .editor-group, .label-editor-type, .label-editor-group {
+        display:none;
+    }
+</style>
+
+    <!-- Recline CSS components -->
+  <link rel="stylesheet" href="{{url_for('static', filename='css/flot.css')}}">
+  <link rel="stylesheet" href="{{url_for('static', filename='css/multiview.css')}}">
+  <!-- /Recline CSS components -->
+
+  <!-- 3rd party JS libraries -->
+  <script type="text/javascript" src="{{url_for('static', filename='vendor/underscore/1.4.2/underscore.js')}}"></script>
+  <script type="text/javascript" src="{{url_for('static', filename='vendor/backbone/0.9.2/backbone.js')}}"></script>
+  <script type="text/javascript" src="{{url_for('static', filename='vendor/mustache/0.5.0-dev/mustache.js')}}"></script>
+  <!--[if lte IE 8]>
+  <script language="javascript" type="text/javascript" src="{{url_for('static', filename='vendor/flot/excanvas.min.js')}}"></script>
+  <![endif]-->
+  <script type="text/javascript" src="{{url_for('static', filename='vendor/flot/jquery.flot.js')}}"></script>
+  <!--[if lte IE 7]>
+  <script language="javascript" type="text/javascript" src="{{url_for('static', filename='vendor/json/json2.js')}}"></script>
+  <![endif]-->
+
+
+  <!-- model and backends -->
+  <script type="text/javascript" src="{{url_for('static', filename='src/ecma-fixes.js')}}"></script>
+  <script type="text/javascript" src="{{url_for('static', filename='src/model.js')}}"></script>
+  <script type="text/javascript" src="{{url_for('static', filename='src/backend.json.js')}}"></script>
+  <script type="text/javascript" src="{{url_for('static', filename='src/backend.memory.js')}}"></script>
+
+  <!-- views -->
+  <script type="text/javascript" src="{{url_for('static', filename='src/view.flot.js')}}"></script>
+  <script type="text/javascript" src="{{url_for('static', filename='src/view.graph.js')}}"></script>
+  <script type="text/javascript" src="{{url_for('static', filename='src/widget.pager.js')}}"></script>
+  <script type="text/javascript" src="{{url_for('static', filename='src/widget.queryeditor.js')}}"></script>
+  <script type="text/javascript" src="{{url_for('static', filename='src/widget.filtereditor.js')}}"></script>
+  <script type="text/javascript" src="{{url_for('static', filename='src/widget.fields.js')}}"></script>
+  <script type="text/javascript" src="{{url_for('static', filename='src/view.multiview.js')}}"></script>
+
+<h1>Timeline</h1>
+<p class="lead">Select fields on the right and see how many organisations plan to publish that field.</p>
+
+<div id="elementsgraph"></div>
+<div style='clear: both;'></div>
+<script type="text/javascript">
+
+
+jQuery(function($) {
+
+  var url = "{{url_for('api_publisher_updates', packagegroup_name=publisher.name)}}";
+  window.dataExplorer = null;
+  window.explorerDiv = $('#elementsgraph');
+
+  // This is some fancy stuff to allow configuring the multiview from
+  // parameters in the query string
+  //
+  // For more on state see the view documentation.
+    var state = {
+    "view-graph": {
+        graphType: "line", 
+        group: "date",
+        series: ['updates']
+    },
+    currentView: "graph"
+    };
+  var dataset = new recline.Model.Dataset({
+      url:url,
+      fields: [
+          {id: 'date', type: 'date', label:"Date"},
+          {id: 'updates', type: 'string', label:"Updates"}
+        ],
+      backend:'json'
+    });
+  createExplorer(dataset, state);
+});
+
+
+// make Explorer creation / initialization in a function so we can call it
+// again and again
+var createExplorer = function(dataset, state) {
+  // remove existing data explorer view
+  var reload = false;
+  if (window.dataExplorer) {
+    window.dataExplorer.remove();
+    reload = true;
+  }
+  window.dataExplorer = null;
+  var $el = $('<div />');
+  $el.appendTo(window.explorerDiv);
+
+  var views = [
+    {
+      id: 'graph',
+      label: 'Graph',
+      view: new recline.View.Graph({
+        model: dataset,
+        state: {
+            graphType: "lines",
+            group: "date",
+            series: ["updates"]
+          }
+      })
+    }
+  ];
+
+ var sidebarViews = [
+ ];
+
+  window.dataExplorer = new recline.View.MultiView({
+    model: dataset,
+    el: $el,
+    state: state,
+    views: views,
+    sidebarViews: sidebarViews
+  });
+}
+
+</script>
+{% endblock %}
+
