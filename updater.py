@@ -12,11 +12,11 @@ import iatiupdates
 
 from iatiupdates import registry
 
-print "getting packagegroups..."
+print "Getting packagegroups..."
 registry.get_packagegroups()
-print "getting packages..."
+print "Getting packages..."
 registry.get_packages()
-print "getting revisions"
+print "Getting revisions"
 registry.get_revisions()
-print "updateing frequencies..."
+print "Updating frequencies..."
 registry.calculate_frequency()
