@@ -100,21 +100,24 @@ def api_publisher(packagegroup_name=None):
 def api_package(id=None):
     data = []
     if id is not None:
-        packages = registry.packages(id)
-        d = packages.as_dict()
+        package = registry.packages(id)
+        if not package: abort(404)
+        d = package.Package.as_dict()
         if d["extras"] is not None:
             d["extras"] = ast.literal_eval(d["extras"])
         if d["resources"] is not None:
             d["resources"] = ast.literal_eval(d["resources"])
+        d["organization"] = package[1]
         data.append(d)
     else:
         packages = registry.packages()
         for package in packages:
-            d = package.as_dict()
+            d = package.Package.as_dict()
             if d["extras"] is not None:
                 d["extras"] = ast.literal_eval(d["extras"])
             if d["resources"] is not None:
                 d["resources"] = ast.literal_eval(d["resources"])
+            d["organization"] = package[1]
             data.append(d)
     return jsonify({"data": data})
 
@@ -124,10 +127,11 @@ def api_package_hash():
     data = []
     packages = registry.packages()
     for package in packages:
-        data.append({"id": package.id, 
-                     "name": package.name, 
-                     "hash": package.hash, 
-                     "url": package.url})
+        data.append({"id": package.Package.id,
+                     "name": package.Package.name,
+                     "hash": package.Package.hash,
+                     "url": package.Package.url,
+                     "organization": package[1]})
     return jsonify({"data": data})
 
 @app.route("/api/revision/")
