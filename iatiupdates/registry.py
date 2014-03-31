@@ -113,8 +113,14 @@ def publishers_frequency(name=None):
 
 def packages(id=None):
     if id is not None:
-        return models.Package.query.filter_by(id=id).first()
-    return models.Package.query.order_by('title ASC').all()
+        return db.session.query(models.Package,
+                                models.PackageGroup.name
+                    ).outerjoin(models.PackageGroup
+                    ).filter(models.Package.id==id).first()
+    return db.session.query(models.Package,
+                            models.PackageGroup.name
+                ).outerjoin(models.PackageGroup
+                ).order_by('Package.title ASC').all()
 
 def revisions():
     data = db.session.query(models.Revision, 
@@ -385,8 +391,14 @@ def get_revisions():
     print "got revisions list"
         
     revcount = 0
+    continuecount = 0
     for revision in revisions_list:
         if revision in current_revisions:
+            continuecount +=1
+            if continuecount >= 500:
+                print "Writing to DB"
+                db.session.commit()
+                continuecount = 0
             continue
         revision_req = urllib2.Request(REVISION_URL % (revision))
         revision_webfile = urllib2.urlopen(revision_req)
@@ -406,11 +418,14 @@ def get_revisions():
         rev.message_type = revision_message["type"]
         rev.messsage_text = revision_message["text"]
         rev.message_method = revision_message["method"]
-        print "saving"
+        print "Saving revision", revision_data["id"]
         db.session.add(rev)
-        if revcount > 500:
+        if revcount >= 100:
+            print "Writing to DB"
             db.session.commit()
             revcount = 0
+    # Save at end of loop, as well.
+    db.session.commit()
 
 def parse_existing_revision_methods():
     def get_revs(offset):
