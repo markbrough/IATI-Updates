@@ -462,17 +462,17 @@ def calculate_frequency():
         pg_dates = set(packagegroups[packagegroup_name])
 
         # Check how many days ago earliest date was
-        #  If it's greater than 365, use 365 because we should 
-        #  look only at the last calendar year.
+        #  If it's greater than 185, use 185 because we should
+        #  look only at the last six months.
 
         earliest_date = min(pg_dates)
         earliest_date_days_ago=(datetime.datetime.utcnow().date()-earliest_date).days
-        if earliest_date_days_ago >= 365:
-            earliest_date_days_ago = 365
+        if earliest_date_days_ago > 185:
+            earliest_date_days_ago = 185
 
-        # Filter out dates that are more than a year old
+        # Filter out dates that are more than six months old
 
-        oneyear_ago = (datetime.datetime.utcnow()-datetime.timedelta(days=12*30)).date()
+        oneyear_ago = (datetime.datetime.utcnow()-datetime.timedelta(days=185)).date()
         the_dates = filter(lambda d: d>oneyear_ago, pg_dates)
 
         number_months_changes = len(the_dates)
@@ -522,10 +522,10 @@ def calculate_frequency():
             if avgmonths ==0:
                 frequency = FREQUENCY_OVERAYEAR
                 comment = "Last updated more than one year ago"
-            elif avgmonths<33:
+            elif avgmonths<=31:
                 frequency = FREQUENCY_MONTHLY
                 comment = "Updated on average every " + str(avgmonths) + " days"
-            elif avgmonths<93:
+            elif avgmonths<=93:
                 frequency = FREQUENCY_QUARTERLY
                 comment = "Updated on average every " + str(avgmonths) + " days"
             else:
