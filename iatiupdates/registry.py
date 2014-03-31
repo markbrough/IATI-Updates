@@ -395,7 +395,7 @@ def get_revisions():
     for revision in revisions_list:
         if revision in current_revisions:
             continuecount +=1
-            if continuecount >= 500:
+            if continuecount >= 5000:
                 print "Writing to DB"
                 db.session.commit()
                 continuecount = 0
