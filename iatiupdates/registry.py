@@ -495,11 +495,11 @@ def calculate_frequency():
         packagegroups = {}
         for row in data:
             try:
-                packagegroups[row.name].append(datetime.date(row.date.date().year, row.date.date().month, 1))
+                packagegroups[row.name].append(datetime.date(row.date.date().year, row.date.date().month, row.date.date().day))
             except KeyError:
                 try:
                     packagegroups[row.name] = []
-                    packagegroups[row.name].append(datetime.date(row.date.date().year, row.date.date().month, 1))
+                    packagegroups[row.name].append(datetime.date(row.date.date().year, row.date.date().month, row.date.date().day))
                 except AttributeError:
                     packagegroups[row.name] = []
                     default_date = datetime.date(year=2000,month=1,day=1)
