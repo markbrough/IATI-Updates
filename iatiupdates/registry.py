@@ -522,7 +522,7 @@ def calculate_frequency():
             if avgmonths ==0:
                 frequency = FREQUENCY_OVERAYEAR
                 comment = "Last updated more than one year ago"
-            elif avgmonths<=31:
+            elif avgmonths<=38:
                 frequency = FREQUENCY_MONTHLY
                 comment = "Updated on average every " + str(avgmonths) + " days"
             elif avgmonths<=93:
