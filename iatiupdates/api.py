@@ -131,6 +131,7 @@ def api_package_hash():
                      "name": package.Package.name,
                      "hash": package.Package.hash,
                      "url": package.Package.url,
+                     "metadata-modified": package.Package.metadata_modified,
                      "organization": package[1]})
     return jsonify({"data": data})
 
