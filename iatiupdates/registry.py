@@ -288,6 +288,19 @@ def get_packages(update_existing_ones=False):
     packages_list_webfile = urllib2.urlopen(packages_list_req)
     packages_list = json.loads(packages_list_webfile.read())
     print "There are", len(packages_list), "packages on the Registry"
+
+    # Also mark packages for deletion if they're not there anymore
+    disappeared = 0
+    for current in current_packages:
+        if current not in packages_list:
+            disappeared +=1
+            p = models.Package.query.filter_by(id=current
+                ).first()
+            print p.name, "is no longer on the Registry"
+            p.deleted = True
+            db.session.commit()
+
+    print disappeared, "packages no longer on the Registry"
         
     for package_id in packages_list:
 
