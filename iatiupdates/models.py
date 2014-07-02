@@ -41,6 +41,7 @@ class Package(db.Model):
     issue_message = Column(UnicodeText)
     issue_date = Column(UnicodeText)
     hash = Column(UnicodeText)
+    deleted = Column(Boolean, default=False)
     url = Column(UnicodeText)
 
     def as_dict(self):
