@@ -132,7 +132,9 @@ def api_package_hash():
                      "hash": package.Package.hash,
                      "url": package.Package.url,
                      "metadata-modified": package.Package.metadata_modified,
-                     "organization": package[1]})
+                     "organization": package[1],
+                     "deleted": package.Package.deleted,
+                    })
     return jsonify({"data": data})
 
 @app.route("/api/revision/")
