@@ -478,10 +478,12 @@ def calculate_frequency():
         #  If it's greater than 185, use 185 because we should
         #  look only at the last six months.
 
-        earliest_date = min(pg_dates)
-        earliest_date_days_ago=(datetime.datetime.utcnow().date()-earliest_date).days
-        if earliest_date_days_ago > 185:
-            earliest_date_days_ago = 185
+        ## 2014: Set earliest date to 185 days ago for all orgs
+
+        #earliest_date = min(pg_dates)
+        #earliest_date_days_ago=(datetime.datetime.utcnow().date()-earliest_date).days
+        #if earliest_date_days_ago > 185:
+        earliest_date_days_ago = 185
 
         # Filter out dates that are more than six months old
 
