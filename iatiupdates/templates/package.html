@@ -16,12 +16,12 @@
         <tbody>
         {% for package in packages %}
         <tr{% if package.deleted %} class="muted"{% endif %}>
-            <td>{{package.name}}</td>
-            <td>{% if package.issue_type %}{{package.issue_type}}{% endif %}</td>
-            <td>{% if package.deleted %}
+            <td>{{package.Package.name}}</td>
+            <td>{% if package.Package.issue_type %}{{package.Package.issue_type}}{% endif %}</td>
+            <td>{% if package.Package.deleted %}
                 <i class="icon-remove" title="This package has been deleted"></i>
                 {% else %}
-                <a href="http://iatiregistry.org/dataset/{{package.name}}">
+                <a href="http://iatiregistry.org/dataset/{{package.Package.name}}">
                 <i class="icon-arrow-right"></i></a>
                 {% endif %}
             </td>
