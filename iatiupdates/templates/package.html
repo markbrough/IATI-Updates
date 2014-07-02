@@ -15,7 +15,7 @@
         </thead>
         <tbody>
         {% for package in packages %}
-        <tr{% if package.deleted %} class="muted"{% endif %}>
+        <tr{% if package.Package.deleted %} class="muted"{% endif %}>
             <td>{{package.Package.name}}</td>
             <td>{% if package.Package.issue_type %}{{package.Package.issue_type}}{% endif %}</td>
             <td>{% if package.Package.deleted %}
