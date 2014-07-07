@@ -510,7 +510,7 @@ def calculate_frequency():
 
         packagegroups = {}
         for row in data:
-            if (row.date and (row.date.date() > datetime.date(year=2014, month=7, day=1)):
+            if (row.date and (row.date.date() > datetime.date(year=2014, month=7, day=1))):
                 continue
 
             try:
