@@ -480,15 +480,21 @@ def calculate_frequency():
 
         ## 2014: Set earliest date to 185 days ago for all orgs
 
-        #earliest_date = min(pg_dates)
-        #earliest_date_days_ago=(datetime.datetime.utcnow().date()-earliest_date).days
-        #if earliest_date_days_ago > 185:
+        earliest_date = min(pg_dates)
+        earliest_date_days_ago_check=(datetime.datetime.utcnow().date()-earliest_date).days
+        if earliest_date_days_ago_check < 185:
+            return 190
         earliest_date_days_ago = 185
 
         # Filter out dates that are more than six months old
 
         oneyear_ago = (datetime.datetime.utcnow()-datetime.timedelta(days=185)).date()
         the_dates = filter(lambda d: d>oneyear_ago, pg_dates)
+
+        # Filter out dates after the end of data collection
+
+        max_date = datetime.datetime.date(year=2014, month=7, day=1)
+        the_dates = filter(lambda d: d<=max_date, the_dates)
 
         number_months_changes = len(the_dates)
 
