@@ -491,11 +491,6 @@ def calculate_frequency():
         oneyear_ago = (datetime.datetime.utcnow()-datetime.timedelta(days=185)).date()
         the_dates = filter(lambda d: d>oneyear_ago, pg_dates)
 
-        # Filter out dates after the end of data collection
-
-        max_date = datetime.date(year=2014, month=7, day=1)
-        the_dates = filter(lambda d: d<=max_date, the_dates)
-
         number_months_changes = len(the_dates)
 
         if number_months_changes == 0:
@@ -515,6 +510,9 @@ def calculate_frequency():
 
         packagegroups = {}
         for row in data:
+            if row.date.date() > datetime.date(year=2014, month=7, day=1):
+                continue
+
             try:
                 packagegroups[row.name].append(datetime.date(row.date.date().year, row.date.date().month, 1))
             except KeyError:
