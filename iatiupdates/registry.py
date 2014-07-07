@@ -493,7 +493,7 @@ def calculate_frequency():
 
         # Filter out dates after the end of data collection
 
-        max_date = datetime.datetime.date(year=2014, month=7, day=1)
+        max_date = datetime.date(year=2014, month=7, day=1)
         the_dates = filter(lambda d: d<=max_date, the_dates)
 
         number_months_changes = len(the_dates)
